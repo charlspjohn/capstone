@@ -1,0 +1,7 @@
+master:
+  serviceType: NodePort
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hostName: jenkins.cyborgdc.com
