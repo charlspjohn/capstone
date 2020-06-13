@@ -21,3 +21,6 @@ kubectl create ns devops
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm repo update
 helm upgrade --install jenkins stable/jenkins --namespace devops --values jenkins-values.yaml
+
+# deploy gitlab
+
