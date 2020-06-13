@@ -5,3 +5,7 @@ master:
     annotations:
       kubernetes.io/ingress.class: nginx
     hostName: jenkins.cyborgdc.com
+    tls:
+      - secretName: tls-cert
+        hosts:
+          - jenkins.cyborgdc.com
