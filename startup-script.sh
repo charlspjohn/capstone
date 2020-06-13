@@ -9,6 +9,8 @@ sudo chown -R $USER $HOME/.kube $HOME/.minikube
 # Enable ingress controller
 sudo minikube addons enable ingress
 
+sleep 300
+
 # deploy helmchart of kubernetes-dashboard
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 helm repo update
