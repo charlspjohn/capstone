@@ -1,5 +1,12 @@
 #!/bin/bash
 
+function create_namespace() {
+	name=$1
+	if ! kubectl get ns $name; then
+		kubectl create ns $name
+	fi
+}
+
 # Start minikube
 sudo minikube start --driver=none
 
@@ -9,7 +16,12 @@ sudo chown -R $USER $HOME/.kube $HOME/.minikube
 # Enable ingress controller
 sudo minikube addons enable ingress
 
-sleep 300
+# wait for ingress controller pod to start
+INGRESSPOD=`kubectl get pods -n kube-system | grep 'ingress-nginx-controller-' | grep '1/1' | wc -l`
+while [ $INGRESSPOD -lt 1 ]; do
+	sleep 1
+	INGRESSPOD=`kubectl get pods -n kube-system | grep 'ingress-nginx-controller-' | grep '1/1' | wc -l`
+done
 
 # deploy helmchart of kubernetes-dashboard
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
@@ -17,7 +29,7 @@ helm repo update
 helm upgrade --install k8s-dashbaord kubernetes-dashboard/kubernetes-dashboard --namespace  kube-system --values kubernetes-dashboard-values.yaml
 
 # create devops namespace
-kubectl create ns devops
+create_namespace devops
 
 # deploy jenkins
 helm repo add stable https://kubernetes-charts.storage.googleapis.com

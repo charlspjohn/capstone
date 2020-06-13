@@ -1,12 +1,7 @@
 rbac:
-  create: true
-  clusterAdminRole: true
-protocolHttp: true
+  clusterReadOnlyRole: true
 extraArgs:
-  - --enable-insecure-login
   - --enable-skip-login
-  - --system-banner="Capstone Project"
-  - --disable-settings-authorizer
 service:
   type: NodePort
   externalPort: 8080
@@ -15,7 +10,11 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
   hosts:
-    - kubernetes-dashboard.cyborgdc.com
+  - dashboard.cyborgdc.com
+  tls:
+  - hosts:
+    - dashboard.cyborgdc.com
+    secretName: tls-cert
 resources:
   limits:
     cpu: 0
