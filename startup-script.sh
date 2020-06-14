@@ -42,4 +42,9 @@ helm repo update
 helm upgrade --install jenkins stable/jenkins --namespace devops --values jenkins-values.yaml
 
 # deploy gitlab
+kubectl create secret generic gitlab-gitlab-initial-root-password --from-literal=password=$(head -c 512 /dev/urandom | LC_CTYPE=C tr -cd 'a-zA-Z0-9' | head -c 32) -n devops
+helm repo add gitlab https://charts.gitlab.io/
+helm repo update
+helm upgrade --install gitlab gitlab/gitlab --namespace devops --values gitlab-valyes.yaml
+
 
