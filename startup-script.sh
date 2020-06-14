@@ -4,6 +4,7 @@ function create_namespace() {
 	name=$1
 	if ! kubectl get ns $name; then
 		kubectl create ns $name
+		kubectl apply -f tls-cert-secret.yaml -n $name
 	fi
 }
 
@@ -22,6 +23,10 @@ while [ $INGRESSPOD -lt 1 ]; do
 	sleep 1
 	INGRESSPOD=`kubectl get pods -n kube-system | grep 'ingress-nginx-controller-' | grep '1/1' | wc -l`
 done
+
+# create tls secrets
+kubectl apply -f tls-cert-secret.yaml -n default
+kubectl apply -f tls-cert-secret.yaml -n kube-system
 
 # deploy helmchart of kubernetes-dashboard
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
