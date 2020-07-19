@@ -23,6 +23,7 @@ resource "google_compute_instance" "vm_instance" {
   boot_disk {
     initialize_params {
       image = "ubuntu-1804-bionic-v20200317"
+      size = 100
     }
   }
   network_interface {
@@ -31,7 +32,7 @@ resource "google_compute_instance" "vm_instance" {
       nat_ip = google_compute_address.static.address
     }
   }
-  hostname = "minikubevm.cyborgdc.com"
+  hostname = "minikubevm.capstone.com"
   metadata = {
     ssh-keys = "${var.gce_ssh_user0}:${file(var.gce_ssh_pub_key_file0)}"
     startup-script = "sudo apt-get update -y; sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y; curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -; sudo add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\"; sudo apt-get update -y; sudo apt-get install docker-ce docker-ce-cli containerd.io -y; curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x ./minikube && sudo mkdir -p /usr/local/bin/ && sudo mv ./minikube /usr/local/bin/minikube; curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl; sudo apt-get install conntrack; curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | sudo bash; sudo apt-get install git -y; git clone https://github.com/charlspjohn/capstone.git"
@@ -59,15 +60,39 @@ resource "google_compute_firewall" "terraformfw" {
   }
 }
 
-resource "google_dns_managed_zone" "cyborgdc" {
-  name     = "cyborgdc-zone"
-  dns_name = "cyborgdc.com."
+resource "google_dns_managed_zone" "capstone" {
+  name     = "capstone-zone"
+  dns_name = "capstone.com."
 }
 
 resource "google_dns_record_set" "minikubevm" {
-  name = "minikubevm.${google_dns_managed_zone.cyborgdc.dns_name}"
+  name = "minikubevm.${google_dns_managed_zone.capstone.dns_name}"
   type = "A"
   ttl  = 300
-  managed_zone = google_dns_managed_zone.cyborgdc.name
+  managed_zone = google_dns_managed_zone.capstone.name
+  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
+}
+
+resource "google_dns_record_set" "gitlab" {
+  name = "gitlab.${google_dns_managed_zone.capstone.dns_name}"
+  type = "A"
+  ttl  = 300
+  managed_zone = google_dns_managed_zone.capstone.name
+  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
+}
+
+resource "google_dns_record_set" "jenkins" {
+  name = "jenkins.${google_dns_managed_zone.capstone.dns_name}"
+  type = "A"
+  ttl  = 300
+  managed_zone = google_dns_managed_zone.capstone.name
+  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
+}
+
+resource "google_dns_record_set" "dashbaord" {
+  name = "dashbaord.${google_dns_managed_zone.capstone.dns_name}"
+  type = "A"
+  ttl  = 300
+  managed_zone = google_dns_managed_zone.capstone.name
   rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
 }

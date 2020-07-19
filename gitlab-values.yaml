@@ -1,0 +1,39 @@
+global:
+  edition: ce
+  ingress:
+    configureCertmanager: false
+    class: "nginx"
+    tls:
+      enabled: true
+      secretName: tls-cert
+  hosts:
+    domain: cyborgdc.com
+    externalIP: 34.67.106.57
+  rails:
+    bootsnap:
+      enabled: false
+  initialRootPassword:
+    secret: gitlab-gitlab-initial-root-password
+    key: password
+certmanager:
+  install: false
+nginx-ingress:
+  enabled: false
+prometheus:
+  install: false
+gitlab-runner:
+  install: false
+gitlab:
+  webservice:
+    minReplicas: 1
+    maxReplicas: 1
+  sidekiq:
+    minReplicas: 1
+    maxReplicas: 1
+  gitlab-shell:
+    minReplicas: 1
+    maxReplicas: 1
+registry:
+  hpa:
+    minReplicas: 1
+    maxReplicas: 1
