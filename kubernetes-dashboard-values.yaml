@@ -10,10 +10,10 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
   hosts:
-  - dashboard.cyborgdc.com
+  - dashboard.capstone.com
   tls:
   - hosts:
-    - dashboard.cyborgdc.com
+    - dashboard.capstone.com
     secretName: tls-cert
 resources:
   limits:

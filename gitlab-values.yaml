@@ -7,7 +7,7 @@ global:
       enabled: true
       secretName: tls-cert
   hosts:
-    domain: cyborgdc.com
+    domain: capstone.com
     externalIP: 34.67.106.57
   rails:
     bootsnap:
