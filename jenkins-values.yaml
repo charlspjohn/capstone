@@ -1,11 +1,8 @@
 master:
+  slaveJenkinsUrl: http://jenkins.capstone.com
   serviceType: NodePort
   ingress:
     enabled: true
     annotations:
       kubernetes.io/ingress.class: nginx
     hostName: jenkins.capstone.com
-    tls:
-      - secretName: tls-cert
-        hosts:
-          - jenkins.capstone.com
