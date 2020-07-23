@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SEC=10
+SEC=60
 
 sudo minikube start
 sudo minikube unpause -A
