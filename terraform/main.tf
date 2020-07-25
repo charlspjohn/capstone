@@ -65,34 +65,10 @@ resource "google_dns_managed_zone" "capstone" {
   dns_name = "capstone.com."
 }
 
-resource "google_dns_record_set" "minikubevm" {
-  name = "minikubevm.${google_dns_managed_zone.capstone.dns_name}"
+resource "google_dns_record_set" "wildcard" {
+  name = "*.${google_dns_managed_zone.capstone.dns_name}"
   type = "A"
-  ttl  = 300
-  managed_zone = google_dns_managed_zone.capstone.name
-  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
-}
-
-resource "google_dns_record_set" "gitlab" {
-  name = "gitlab.${google_dns_managed_zone.capstone.dns_name}"
-  type = "A"
-  ttl  = 300
-  managed_zone = google_dns_managed_zone.capstone.name
-  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
-}
-
-resource "google_dns_record_set" "jenkins" {
-  name = "jenkins.${google_dns_managed_zone.capstone.dns_name}"
-  type = "A"
-  ttl  = 300
-  managed_zone = google_dns_managed_zone.capstone.name
-  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
-}
-
-resource "google_dns_record_set" "dashbaord" {
-  name = "dashbaord.${google_dns_managed_zone.capstone.dns_name}"
-  type = "A"
-  ttl  = 300
+  ttl  = 60
   managed_zone = google_dns_managed_zone.capstone.name
   rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
 }
