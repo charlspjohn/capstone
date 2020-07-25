@@ -1,13 +1,13 @@
-#Create rootCA key
+# Create rootCA key
 openssl genrsa -out rootCA.key 4096
 
-#Create and self sign the Root Certificate
+# Create and self sign the Root Certificate
 openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt
 
-#Create the certificate key
+# Create the certificate key
 openssl genrsa -out capstone.com.key 2048
 
-#Create configuration file for wildcard cert
+# Create configuration file for wildcard cert
 $ cat >> capstone.com.conf
 ts = 2048
 prompt = no
@@ -32,10 +32,10 @@ subjectAltName = @alt_names
 DNS.1 = capstone.com
 DNS.2 = *.capstone.com
 
-#Create the signing (csr)
+# Create the signing (csr)
 openssl req -config capstone.com.conf -new -key capstone.com.key -out capstone.com.csr -verbose
 
-#Create extfile
+# Create extfile
 cat >> extfile.conf
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
@@ -46,5 +46,5 @@ subjectAltName = @alt_names
 DNS.1 = capstone.com
 DNS.2 = *.capstone.com
 
-#Sign the certificate for capstone.com
+# Sign the certificate for capstone.com
 openssl x509 -req -in capstone.com.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out capstone.com.crt -days 500 -sha256 -extfile extfile.conf
