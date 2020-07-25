@@ -8,30 +8,30 @@ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt
 openssl genrsa -out capstone.com.key 2048
 
 # Create configuration file for wildcard cert
-$ cat >> capstone.com.conf
-ts = 2048
-prompt = no
-default_md = sha256
-x509_extensions = v3_req
-distinguished_name = dn
-req_extensions = v3_req
-copy_extensions = copy 
-
-[dn]
-C = CA
-ST = Ontario
-L = Toronto
-O = Capstone Inc
-OU = IT
-CN = capstone.com
-
-[v3_req]
-subjectAltName = @alt_names
-
-[alt_names]
-DNS.1 = capstone.com
-DNS.2 = *.capstone.com
-
+$ cat >> capstone.com.conf  
+ts = 2048  
+prompt = no  
+default_md = sha256  
+x509_extensions = v3_req  
+distinguished_name = dn  
+req_extensions = v3_req  
+copy_extensions = copy  
+  
+[dn]  
+C = CA  
+ST = Ontario  
+L = Toronto  
+O = Capstone Inc  
+OU = IT  
+CN = capstone.com  
+  
+[v3_req]  
+subjectAltName = @alt_names  
+  
+[alt_names]  
+DNS.1 = capstone.com  
+DNS.2 = *.capstone.com  
+  
 # Create the signing (csr)
 openssl req -config capstone.com.conf -new -key capstone.com.key -out capstone.com.csr -verbose
 
