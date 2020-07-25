@@ -36,15 +36,15 @@ DNS.2 = *.capstone.com
 openssl req -config capstone.com.conf -new -key capstone.com.key -out capstone.com.csr -verbose
 
 # Create extfile
-cat >> extfile.conf
-authorityKeyIdentifier=keyid,issuer
-basicConstraints=CA:FALSE
-keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
-subjectAltName = @alt_names
-
-[alt_names]
-DNS.1 = capstone.com
-DNS.2 = *.capstone.com
-
+cat >> extfile.conf  
+authorityKeyIdentifier=keyid,issuer  
+basicConstraints=CA:FALSE  
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment  
+subjectAltName = @alt_names  
+  
+[alt_names]  
+DNS.1 = capstone.com  
+DNS.2 = *.capstone.com  
+  
 # Sign the certificate for capstone.com
 openssl x509 -req -in capstone.com.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out capstone.com.crt -days 500 -sha256 -extfile extfile.conf
