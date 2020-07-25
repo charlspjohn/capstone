@@ -1,6 +1,14 @@
+terraform {
+  backend "gcs" {
+    bucket = "capstone-test0"
+    prefix = "minikube"
+    credentials = "~/Downloads/current-terraform-backend-project.json"
+  }
+}
+
 provider "google" {
   credentials = file("~/Downloads/current_gcp_project.json")
-  project = "just-vent-278618"
+  project = "genuine-ember-284308"
   region  = "us-central1"
   zone    = "us-central1-c"
 }
@@ -13,12 +21,12 @@ output "hostname" {
   value = google_compute_instance.vm_instance.hostname
 }
 
-variable gce_ssh_user0 { default = "charlspjohn" }
+variable gce_ssh_user0 { default = "capstone" }
 variable gce_ssh_pub_key_file0 { default = "~/.ssh/id_rsa.pub" }
 
 resource "google_compute_instance" "vm_instance" {
   name         = "minikube-vm"
-  machine_type = "n1-standard-8"
+  machine_type = "n1-standard-4"
   allow_stopping_for_update = true
   boot_disk {
     initialize_params {
@@ -63,6 +71,12 @@ resource "google_compute_firewall" "terraformfw" {
 resource "google_dns_managed_zone" "capstone" {
   name     = "capstone-zone"
   dns_name = "capstone.com."
+  visibility = "private"
+  private_visibility_config {
+    networks {
+      network_url = google_compute_network.vpc_network.id
+    }
+  }
 }
 
 resource "google_dns_record_set" "wildcard" {
