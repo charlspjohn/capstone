@@ -9,7 +9,7 @@ function create_namespace() {
 }
 
 # Check if hostpath is moved to /data/hostpath-provisioner
-CHK_FSTAB=$(grep '/data/hostpath-provisioner' /etc/fstab | wc -l)
+CHK_FSTAB=$(grep '/tmp/hostpath-provisioner' /etc/fstab | wc -l)
 if [[ "$CHK_FSTAB" == "0" ]]; then
 	sudo echo '/var/tmp/hostpath-provisioner /tmp/hostpath-provisioner none defaults,bind 0 0' >> /etc/fstab
 	echo "Need a system reboot to configure new hostpath for minikube volumes. Rebooting the system in 10 seconds.."
