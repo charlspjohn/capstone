@@ -1,4 +1,5 @@
 master:
+  enableXmlConfig: true
   tag: 2.245
   serviceType: NodePort
   adminPassword: "oKNItqC34ndZYvkOYXybGcMOmab7tc2b"
