@@ -56,16 +56,38 @@ resource "google_compute_address" "static" {
   name = "ipv4-address"
 }
 
-resource "google_compute_firewall" "terraformfw" {
-  name    = "terraform-firewall"
+resource "google_compute_firewall" "fw_all_in" {
+  name    = "tf-fw-in"
   network = google_compute_network.vpc_network.name
   allow {
     protocol = "icmp"
   }
   allow {
     protocol = "tcp"
-    ports    = ["22", "80", "443", "0-65535"]
+    ports    = ["0-65535"]
   }
+  allow {
+    protocol = "udp"
+    ports    = ["0-65535"]
+  }
+  direction = "INGRESS"
+}
+
+resource "google_compute_firewall" "fw_all_out" {
+  name    = "tf-fw-out"
+  network = google_compute_network.vpc_network.name
+  allow {
+    protocol = "icmp"
+  }
+  allow {
+    protocol = "tcp"
+    ports    = ["0-65535"]
+  }
+  allow {
+    protocol = "udp"
+    ports    = ["0-65535"]
+  }
+  direction = "EGRESS"
 }
 
 resource "google_dns_managed_zone" "capstone" {
@@ -79,8 +101,40 @@ resource "google_dns_managed_zone" "capstone" {
   }
 }
 
-resource "google_dns_record_set" "wildcard" {
-  name = "*.${google_dns_managed_zone.capstone.dns_name}"
+resource "google_dns_record_set" "minikubevm" {
+  name = "minikubevm.${google_dns_managed_zone.capstone.dns_name}"
+  type = "A"
+  ttl  = 60
+  managed_zone = google_dns_managed_zone.capstone.name
+  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
+}
+
+resource "google_dns_record_set" "dashboard" {
+  name = "dashboard.${google_dns_managed_zone.capstone.dns_name}"
+  type = "A"
+  ttl  = 60
+  managed_zone = google_dns_managed_zone.capstone.name
+  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
+}
+
+resource "google_dns_record_set" "jenkins" {
+  name = "jenkins.${google_dns_managed_zone.capstone.dns_name}"
+  type = "A"
+  ttl  = 60
+  managed_zone = google_dns_managed_zone.capstone.name
+  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
+}
+
+resource "google_dns_record_set" "gitlab" {
+  name = "gitlab.${google_dns_managed_zone.capstone.dns_name}"
+  type = "A"
+  ttl  = 60
+  managed_zone = google_dns_managed_zone.capstone.name
+  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
+}
+
+resource "google_dns_record_set" "registry" {
+  name = "registry.${google_dns_managed_zone.capstone.dns_name}"
   type = "A"
   ttl  = 60
   managed_zone = google_dns_managed_zone.capstone.name
