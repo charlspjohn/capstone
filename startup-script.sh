@@ -58,3 +58,6 @@ kubectl apply -f jenkins-gitlab-ssh-keys-secret.yaml -n devops
 helm repo add gitlab https://charts.gitlab.io/
 helm repo update
 helm upgrade --install gitlab gitlab/gitlab --namespace devops --values gitlab-values.yaml --version 4.2.0
+
+# patch ingress for ssh
+kubectl patch configmap tcp-services -n kube-system --patch '{"data":{"2222":"devops/gitlab-gitlab-shell:2222"}}'
