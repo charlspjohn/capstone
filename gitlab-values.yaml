@@ -1,4 +1,8 @@
 global:
+  shell:
+    port: 2222
+    hostKeys:
+      secret: jenkins-gitlab-ssh-keys-secret 
   edition: ce
   ingress:
     configureCertmanager: false
@@ -15,6 +19,9 @@ global:
   initialRootPassword:
     secret: gitlab-gitlab-initial-root-password
     key: password
+  certificates:
+    customCAs:
+      - secret: custom-ca
 certmanager:
   install: false
 nginx-ingress:

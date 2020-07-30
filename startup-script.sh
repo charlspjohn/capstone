@@ -38,6 +38,7 @@ done
 # create tls secrets
 kubectl apply -f tls-cert-secret.yaml -n default
 kubectl apply -f tls-cert-secret.yaml -n kube-system
+kubectl apply -f custom-ca-secret.yaml -n devops
 
 # deploy helmchart of kubernetes-dashboard
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
@@ -53,8 +54,7 @@ helm repo update
 helm upgrade --install jenkins stable/jenkins --namespace devops --values jenkins-values.yaml --version 2.4.1
 # deploy gitlab
 kubectl create secret generic gitlab-gitlab-initial-root-password --from-literal=password=$(head -c 512 /dev/urandom | LC_CTYPE=C tr -cd 'a-zA-Z0-9' | head -c 32) -n devops
+kubectl apply -f jenkins-gitlab-ssh-keys-secret.yaml -n devops
 helm repo add gitlab https://charts.gitlab.io/
 helm repo update
 helm upgrade --install gitlab gitlab/gitlab --namespace devops --values gitlab-values.yaml --version 4.2.0
-
-
