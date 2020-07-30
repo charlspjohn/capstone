@@ -8,7 +8,7 @@ global:
     configureCertmanager: false
     class: "nginx"
     tls:
-      enabled: false
+      enabled: true
       secretName: tls-cert
   hosts:
     domain: capstone.com
