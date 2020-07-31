@@ -36,22 +36,21 @@ while [ $INGRESSPOD -lt 1 ]; do
 	INGRESSPOD=`kubectl get pods -n kube-system | grep 'ingress-nginx-controller-' | grep '1/1' | wc -l`
 done
 
+# add repositories
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm repo add gitlab https://charts.gitlab.io/
+helm repo update
+
 # create tls secrets
 kubectl apply -f secrets/secret-tls-cert.yaml -n default
 kubectl apply -f secrets/secret-tls-cert.yaml -n kube-system
 
 # deploy helmchart of kubernetes-dashboard
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-helm repo update
 helm upgrade --install k8s-dashbaord kubernetes-dashboard/kubernetes-dashboard --namespace  kube-system --values kubernetes-dashboard-values.yaml
 
 # create devops namespace
 create_namespace devops
-
-# add repositories
-helm repo add stable https://kubernetes-charts.storage.googleapis.com
-helm repo add gitlab https://charts.gitlab.io/
-helm repo update
 
 # deploy jenkins
 helm upgrade --install jenkins stable/jenkins --namespace devops --values jenkins-values.yaml --version 2.4.1
