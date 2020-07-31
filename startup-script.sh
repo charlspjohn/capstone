@@ -4,7 +4,8 @@ function create_namespace() {
 	name=$1
 	if ! kubectl get ns $name; then
 		kubectl create ns $name
-		kubectl apply -f tls-cert-secret.yaml -n $name
+		kubectl apply -f secrets/secret-tls-cert.yaml -n $name
+		kubectl apply -f secrets/secret-self-signed-ca.yaml -n $name
 	fi
 }
 
@@ -36,9 +37,8 @@ while [ $INGRESSPOD -lt 1 ]; do
 done
 
 # create tls secrets
-kubectl apply -f tls-cert-secret.yaml -n default
-kubectl apply -f tls-cert-secret.yaml -n kube-system
-kubectl apply -f custom-ca-secret.yaml -n devops
+kubectl apply -f secrets/secret-tls-cert.yaml -n default
+kubectl apply -f secrets/secret-tls-cert.yaml -n kube-system
 
 # deploy helmchart of kubernetes-dashboard
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
@@ -48,15 +48,17 @@ helm upgrade --install k8s-dashbaord kubernetes-dashboard/kubernetes-dashboard -
 # create devops namespace
 create_namespace devops
 
-# deploy jenkins
+# add repositories
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
-helm repo update
-helm upgrade --install jenkins stable/jenkins --namespace devops --values jenkins-values.yaml --version 2.4.1
-# deploy gitlab
-kubectl create secret generic gitlab-gitlab-initial-root-password --from-literal=password=$(head -c 512 /dev/urandom | LC_CTYPE=C tr -cd 'a-zA-Z0-9' | head -c 32) -n devops
-kubectl apply -f jenkins-gitlab-ssh-keys-secret.yaml -n devops
 helm repo add gitlab https://charts.gitlab.io/
 helm repo update
+
+# deploy jenkins
+helm upgrade --install jenkins stable/jenkins --namespace devops --values jenkins-values.yaml --version 2.4.1
+
+# deploy gitlab
+kubectl create secret generic gitlab-gitlab-initial-root-password --from-literal=password=$(head -c 512 /dev/urandom | LC_CTYPE=C tr -cd 'a-zA-Z0-9' | head -c 32) -n devops
+kubectl apply -f secrets/secret-gitlab-gitlab-shell-host-keys.yaml -n devops
 helm upgrade --install gitlab gitlab/gitlab --namespace devops --values gitlab-values.yaml --version 4.2.0
 
 # patch ingress for ssh

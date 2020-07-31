@@ -2,7 +2,7 @@ global:
   shell:
     port: 2222
     hostKeys:
-      secret: jenkins-gitlab-ssh-keys-secret 
+      secret: gitlab-gitlab-shell-host-keys 
   edition: ce
   ingress:
     configureCertmanager: false
@@ -12,7 +12,7 @@ global:
       secretName: tls-cert
   hosts:
     domain: capstone.com
-    externalIP: 34.67.106.57
+#    externalIP: 34.67.106.57
   rails:
     bootsnap:
       enabled: false
