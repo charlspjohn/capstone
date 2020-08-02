@@ -7,7 +7,11 @@ ARG group=jenkins
 USER root
 
 COPY rootCA.crt /usr/local/share/ca-certificates/rootCA.crt
-RUN update-ca-certificates
+COPY helm /usr/local/bin/helm
+COPY kubectl /usr/local/bin/kubectl
+COPY docker /usr/local/bin/docker
+RUN update-ca-certificates \
+    && chmod +x /usr/local/bin/helm /usr/local/bin/kubectl /usr/local/bin/docker
 
 USER ${user}
 
