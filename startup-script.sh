@@ -68,3 +68,6 @@ helm upgrade --install gitlab gitlab/gitlab --namespace devops --values gitlab-v
 
 # patch ingress for ssh
 kubectl patch configmap tcp-services -n kube-system --patch '{"data":{"2222":"devops/gitlab-gitlab-shell:2222"}}'
+
+# add admin role to deault service account from devops namespace
+kubectl create clusterrolebinding owner-cluster-admin-binding --clusterrole cluster-admin --user "system:serviceaccount:devops:default"
