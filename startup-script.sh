@@ -62,7 +62,7 @@ create_namespace devops
 helm upgrade --install jenkins stable/jenkins --namespace devops --values jenkins-values.yaml --version 2.4.1
 
 # deploy gitlab
-kubectl create secret generic gitlab-gitlab-initial-root-password --from-literal=password=$(head -c 512 /dev/urandom | LC_CTYPE=C tr -cd 'a-zA-Z0-9' | head -c 32) -n devops
+kubectl create secret generic gitlab-gitlab-initial-root-password --from-literal=username=root --from-literal=password=$(head -c 512 /dev/urandom | LC_CTYPE=C tr -cd 'a-zA-Z0-9' | head -c 32) -n devops
 kubectl apply -f secrets/secret-gitlab-gitlab-shell-host-keys.yaml -n devops
 helm upgrade --install gitlab gitlab/gitlab --namespace devops --values gitlab-values.yaml --version 4.2.0
 
